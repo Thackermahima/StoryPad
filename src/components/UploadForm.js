@@ -28,7 +28,7 @@ function UploadForm() {
     const bookContext = React.useContext(BookContext);
     const { addData, storeFiles, storeFile, Image } = bookContext;
     const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
-    const { Moralis, account, isAuthenticated } = useMoralis();
+    const { Moralis, account, user,isAuthenticated } = useMoralis();
     // console.log(account);
     const [AuthorName, setAuthorName] = useState('')
     const [name, setName] = useState('');
@@ -97,7 +97,13 @@ function UploadForm() {
         var url = await storeFile(file);
         setCoverPic(url);
     }
-
+const wallet = ()=>{
+    if(isAuthenticated){
+            let ua = user.get("ethAddress")
+            console.log(ua,'ua ----');
+    }
+}
+wallet()
     const checkboxEvent = (e) => {
         setCheckbox(e.target.checked)
     }

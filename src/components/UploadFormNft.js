@@ -141,7 +141,7 @@ function UploadFormNft() {
     // let tokenContractAddress = event?.address;
     let tokenContractAddress = event.args[1];
     nftData.set("tokenContractAddress", tokenContractAddress);
-    nftData.set("CurrentUser", event.args[0])
+    nftData.set("CurrentUser", localStorage.getItem("currentUserAddress"))
 
 
     setLoading(true);

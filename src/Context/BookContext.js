@@ -21,6 +21,7 @@ export const BookContextProvider = (props) => {
 
     const { Moralis, user, account } = useMoralis();
     const { data, fetch } = useMoralisQuery("StoryPadBuildit");
+    const storyD = data;
     // console.log(data, ' ====');
     const [NewData, setData] = useState([]);
     const [storyDetails, setStoryDetails] = useState({})
@@ -108,25 +109,16 @@ export const BookContextProvider = (props) => {
             const query = new Moralis.Query(archives);
             query.equalTo("objectId", (params.id).toString());
             const object = await query.first();
+            console.log(object,'obj in context---');
             axios.get(`https://dweb.link/ipfs/${object.attributes.CID}/story.json`)
                 .then(function (response) {
-                    setStoryDetails(response.data)
+                    setStoryDetails(response.data)  
                 })
                 .catch(function (error) {
 
                 })
         }
     }
-
-    // storyDetails ? (
-    //     storyDetails.map((d) => {
-    //         console.log('d.name----', d.name);
-    //     })
-    // ) : 'DISHAHAAAAAAAAA'
-
-
-
-    console.log('storyDetails contexxx***', storyDetails);
 
 
     // ------------MAHIMA'CODE
@@ -153,13 +145,12 @@ export const BookContextProvider = (props) => {
                 addData,
                 storeFiles,
                 getStoryDetails,
-                data,
+                storyD,
                 storyDetails,
                 login,
                 storeFile,
                 Image,
                 fetch,
-                // loading
 
 
 

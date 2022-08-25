@@ -13,21 +13,20 @@ import axios from "axios";
 function Profile() {
 
     const storyContext = React.useContext(BookContext);
-    const { data } = storyContext;
+    const { storyD } = storyContext;
 
-    console.log('data==', data);
-    console.log(localStorage.getItem('currentUserAddress'));
+    console.log('data==', storyD);
 
 
 
     useEffect(() => {
-        const bList = JSON.parse(JSON.stringify(data));
+        const bList = JSON.parse(JSON.stringify(storyD));
         if (bList) {
             ListStoryData(bList)
         }
         console.log(bList);
 
-    }, [data])
+    }, [storyD])
 
 
     const [storyData, setstoryData] = useState([]);
@@ -50,6 +49,8 @@ function Profile() {
                         array.push(newData);
                         console.log('newData', newData);
                     });
+
+                
                 }
 
             }

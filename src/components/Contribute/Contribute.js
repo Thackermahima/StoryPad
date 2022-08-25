@@ -7,26 +7,23 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useMoralis, useMoralisQuery } from "react-moralis";
-import { Blob, Web3Storage } from 'web3.storage/dist/bundle.esm.min.js'
+import { useMoralis } from "react-moralis";
+import {  Web3Storage } from 'web3.storage/dist/bundle.esm.min.js'
 import { useParams } from 'react-router-dom';
 
 
 export default function ModalContribute(props) {
-  const { Moralis, isAuthenticated, isInitialized } = useMoralis();
-  console.log(props.e, 'e in Modal')
+  const { Moralis  } = useMoralis();
+  // console.log(props.e, 'e in Modal')
   const params = useParams();
 
   const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
   const client = new Web3Storage({ token: API_Token })
 
   const reviews = Moralis.Object.extend("Reviews");
-  const reviewsData = new reviews();
 
-  const [allReviews, setAllReviews] = useState([]);
   const [price, setPrice] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isUpdated, setIsUpdated] = useState(false);
 
   function PriceSet() {
     setPrice(props.e.element.Nonholder_price)
