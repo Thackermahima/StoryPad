@@ -135,7 +135,7 @@ IERC721(token).transferFrom(from, to, amount);
 require(to.send(amount), "Transfer of ETH to receiver failed");
 }
 }
-function purchaseItem(uint256 tokenId) external payable{
+function purchaseItem(uint256 tokenId,address to) external payable{
 uint _totalPrice = getTotalPrice(tokenId);
 MarketItem memory item = marketItems[tokenId];
 require(msg.value >= _totalPrice, "not enough matic to cover item price and market fee");
@@ -145,8 +145,8 @@ require(!item.sold, "item already sold");
 
 item.seller.transfer(item.price);
 item.sold = true;
-IERC721(item.nftContract).transferFrom(item.seller, msg.sender, tokenId);
-marketItems[tokenId].owner = payable(msg.sender);
+IERC721(item.nftContract).transferFrom(item.seller, to, tokenId);
+marketItems[tokenId].owner = payable(to);
 
 
 emit Bought(
@@ -154,7 +154,7 @@ address(this),
 item.tokenId,
 item.price,
 item.seller,
-msg.sender
+to
 );
 }
 

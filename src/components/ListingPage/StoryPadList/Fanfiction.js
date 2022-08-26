@@ -3,46 +3,64 @@ import Chip from "@material-ui/core/Chip";
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useMoralis } from "react-moralis";
+import { useMoralis, useMoralisQuery } from "react-moralis";
+
 
 
 import { BookContext } from '../../../Context/BookContext'
 import ModalContribute from "../../Contribute/Contribute";
 
 function Fanfiction() {
-
+  const { Moralis, user, account, isInitialized } = useMoralis();
+  const { data, fetch } = useMoralisQuery("nftMetadata");
   const storyContext = React.useContext(BookContext);
-  const { data } = storyContext;
 
+
+  const { storyD } = storyContext;
+  console.log(data,storyD);
 
   useEffect(() => {
-    const bList = JSON.parse(JSON.stringify(data));
-    if (bList) {
-      ListStoryData(bList)
+    const bList = JSON.parse(JSON.stringify(storyD));
+    const tokenList = JSON.parse(JSON.stringify(data));
+
+    if (bList && tokenList) {
+  console.log(bList,tokenList);
+
+      ListStoryData(bList, tokenList)
     }
-  }, [data])
+  }, [storyD, isInitialized, data])
+
 
   const [storyData, setstoryData] = useState([]);
 
-  async function ListStoryData(bList) {
+  async function ListStoryData(bList, tokenList) {
+
     var array = [];
     if (bList) {
       for (let index = 0; index < bList.length; index++) {
         const element = bList[index];
         if (element.CID) {
-          await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then((response) => {
-            const id = element.objectId;
-            var newData = { ...response.data, id, element };
-            array.push(newData);
+
+          await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then(async (response) => {
+            if (response.data.walletAddress) {
+              const id = element.objectId
+              let wall = response.data.walletAddress;
+
+              tokenList.map((e) => {
+                let tokAdd = e.tokenContractAddress;
+                if (wall == e.CurrentUser) {
+                  var newData = { ...response.data, id, element, tokAdd }
+                  array.push(newData)
+                }
+              })
+            }
           });
         }
-
       }
     }
     setstoryData(array);
   }
   console.log(storyData, 'storydata horror');
-
 
 
   return (
@@ -52,9 +70,10 @@ function Fanfiction() {
         </div>
         <div className="container">
           <div className="card-columns">
-            {
-              storyData && storyData.map((e) => {
-                if (e.category == "Fanfiction") {
+
+            {storyData !== undefined &&
+              storyData.map((e) => {
+                if (e !== undefined && e.category == "Fanfiction") {
                   return (
                     <div className="card carding">
                       <a href="#">
@@ -66,7 +85,6 @@ function Fanfiction() {
                           </p>
 
                           <p class="card-text"><small className="text-muted">Last updated {new Date().toLocaleString()}</small></p>
-
                           {/* <button type="button" class="btn btn-outline-danger buy-story-btn">Buy Story</button> */}
                           {e.element.nftholder_access && e.element.general_access == 1 ? ('') :
 
@@ -78,16 +96,24 @@ function Fanfiction() {
 
                           }
 
-                          <Link to={`/fantasy-detail/${e.id}`}>
-                            <Button variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
-                          </Link>
+                          {
+                            (e.element.nftholder_access && e.element.general_access == 2) ?
+                              <Button disabled={true} variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
+                              :
+                              <Link
+                                to={`/fanfiction-detail/${e.id}`}>
+                                <Button variant="outline-info btn-outline-danger buy-story-btn" disabled={false} >Read Full Story</Button>
+                              </Link>
+                          }
                         </div>
                       </a>
                     </div>
                   )
                 }
 
-              })
+              }
+
+              )
             }
           </div>
         </div>

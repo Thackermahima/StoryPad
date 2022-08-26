@@ -60,7 +60,7 @@ function getAllTokenId(address tokenContractAddress) public view returns (uint[]
          uint256 tokenId,
          address tokenAddress
       )public payable{
-mintContract(tokenAddress).purchaseItem(tokenId);
+mintContract(tokenAddress).purchaseItem(tokenId,msg.sender);
       }
 // function callURI(
 //          address tokenAddress,

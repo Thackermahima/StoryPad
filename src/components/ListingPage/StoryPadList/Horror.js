@@ -4,15 +4,19 @@ import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useMoralis, useMoralisQuery } from "react-moralis";
+import { ethers } from "ethers";
+// import childConABI from "../abi/mintContract.json"
+
 
 
 
 import { BookContext } from '../../../Context/BookContext'
 import ModalContribute from "../../Contribute/Contribute";
 
-function Horror() {
+ function Horror() {
   const { Moralis, user, account, isInitialized } = useMoralis();
   const { data, fetch } = useMoralisQuery("nftMetadata");
+  const [userAccount, setUserAccount] = useState([]);
   const storyContext = React.useContext(BookContext);
 
 
@@ -26,6 +30,7 @@ function Horror() {
       ListStoryData(bList, tokenList)
     }
   }, [storyD, isInitialized, data])
+
 
   const [storyData, setstoryData] = useState([]);
 
@@ -82,9 +87,12 @@ function Horror() {
 
                           <p class="card-text"><small className="text-muted">Last updated {new Date().toLocaleString()}</small></p>
                           {/* <button type="button" class="btn btn-outline-danger buy-story-btn">Buy Story</button> */}
+                          {
+
+                          }
                           {e.element.nftholder_access && e.element.general_access == 1 ? ('') :
 
-                            <ModalContribute walletAddress={e.walletAddress}
+                            <ModalContribute 
                               e={e}
                             // chargeble={e.chargeble}
                             // discount={e.discount}
