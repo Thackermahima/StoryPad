@@ -3,46 +3,51 @@ import Chip from "@material-ui/core/Chip";
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import axios from "axios";
-import { useMoralis } from "react-moralis";
-
+import { useMoralis, useMoralisQuery } from "react-moralis";
+import { ethers } from "ethers";
 
 import { BookContext } from '../../../Context/BookContext'
 import ModalContribute from "../../Contribute/Contribute";
 
-function ScienceFiction() {
-
+ function ScienceFiction() {
+  const { Moralis, user, account, isInitialized } = useMoralis();
+  const [userAccount, setUserAccount] = useState([]);
   const storyContext = React.useContext(BookContext);
-  const { data } = storyContext;
 
+  const { storyD } = storyContext;
 
   useEffect(() => {
-    const bList = JSON.parse(JSON.stringify(data));
-    if (bList) {
+    const bList = JSON.parse(JSON.stringify(storyD));
+
+    if (bList ) {
       ListStoryData(bList)
     }
-  }, [data])
+  }, [storyD, isInitialized])
+
 
   const [storyData, setstoryData] = useState([]);
 
   async function ListStoryData(bList) {
+
     var array = [];
     if (bList) {
       for (let index = 0; index < bList.length; index++) {
         const element = bList[index];
         if (element.CID) {
-          await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then((response) => {
-            const id = element.objectId;
-            var newData = { ...response.data, id, element };
-            array.push(newData);
+
+          await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then(async (response) => {
+            if (response.data.walletAddress) {
+              const id = element.objectId
+              var newData = {...response.data,id,element}
+             array.push(newData)
+            }
           });
         }
-
       }
     }
     setstoryData(array);
   }
   console.log(storyData, 'storydata horror');
-
 
 
   return (
@@ -52,9 +57,10 @@ function ScienceFiction() {
         </div>
         <div className="container">
           <div className="card-columns">
-            {
-              storyData && storyData.map((e) => {
-                if (e.category == "Science fiction") {
+
+            {storyData !== undefined &&
+              storyData.map((e) => {
+                if (e !== undefined && e.category == "Science fiction") {
                   return (
                     <div className="card carding">
                       <a href="#">
@@ -67,27 +73,26 @@ function ScienceFiction() {
 
                           <p class="card-text"><small className="text-muted">Last updated {new Date().toLocaleString()}</small></p>
 
-                          {/* <button type="button" class="btn btn-outline-danger buy-story-btn">Buy Story</button> */}
-                          {e.element.nftholder_access && e.element.general_access == 1 ? ('') :
+                          {
+                            (e.element.nftholder_access && e.element.general_access == 2) ?
+                            <Link
+                                to={`/sciencefiction-detail/${e.id}`}>
+                              <Button disabled={false} variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
+                              </Link>
 
-                            <ModalContribute walletAddress={e.walletAddress}
-                              e={e}
-                            // chargeble={e.chargeble}
-                            // discount={e.discount}
-                            ></ModalContribute>
-
+                              :
+                              <Link
+                                to={`/sciencefiction-detail/${e.id}`}>
+                                <Button variant="outline-info btn-outline-danger buy-story-btn" disabled={false} >Read Full Story</Button>
+                              </Link>
                           }
-
-                          <Link to={`/fantasy-detail/${e.id}`}>
-                            <Button variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
-                          </Link>
                         </div>
                       </a>
                     </div>
                   )
                 }
-
-              })
+              }
+              )
             }
           </div>
         </div>

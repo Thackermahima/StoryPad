@@ -1,57 +1,66 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { BookContext } from '../../../Context/BookContext';
-import { useMoralis } from "react-moralis";
-import ReactReadMoreReadLess from "react-read-more-read-less";
-import StoryDetail from "../StoryDetail";
+import { useMoralis, useMoralisQuery } from "react-moralis";
 import ReactDOM from "react-dom";
-
-
-
-
-
-
-
-// const ReadMore = ({ children }) => {
-//     const text = children ;
-//     const [isReadMore, setIsReadMore] = useState(true);
-//     const toggleReadMore = () => {
-//         setIsReadMore(!isReadMore);
-//     };
-//     return (
-//         <p className="text">
-//             {isReadMore !== undefined ? text.slice(0, 150) : text}
-//             <span onClick={toggleReadMore} className="read-or-hide">
-//                 {isReadMore ? "...read more" : " show less"}
-//             </span>
-//         </p>
-//     );
-// };
+import axios from 'axios'
+import ModalContribute from "../../Contribute/Contribute";
 
 function RomanceDetail() {
-    // const [Content, setContent] = useState();
+    const [readFullStory, setReadFullStory] = useState(false);
+
+    const { data, fetch } = useMoralisQuery("nftMetadata");
+    console.log(data, 'data nft');
+
+    const [storyDetails, setStoryDetails] = useState({})
+    const [Content, setContent] = useState();
     const params = useParams();
     console.log('params', params);
-    const { isAuthenticated, isInitialized } = useMoralis()
+    const { Moralis, isAuthenticated, isInitialized } = useMoralis()
 
-
-    const storyContext = React.useContext(BookContext);
-    const { getStoryDetails, storyDetails } = storyContext;
 
 
     useEffect(() => {
-        getStoryDetails(params)
-    }, [isAuthenticated, isInitialized])
+        const b = JSON.parse(JSON.stringify(data));
+        console.log((b, 'token'));
 
-    // const longText = { storyDetails.content };
-    // console.log(longText, 'longText');
+        if (b) {
+            console.log(b, 'bbbbbbbbbbb');
+            getStoryDetails(params, b)
+        }
+    }, [data, isInitialized, isAuthenticated])
 
-    // {
-    //     setContent(storyDetails.content)
-    // }
-    // console.log('Content==',Content);
+    async function getStoryDetails(params, b) {
+        if (isAuthenticated) {
+            const archives = Moralis.Object.extend("StoryPadBuildit");
+            const query = new Moralis.Query(archives);
+            query.equalTo("objectId", (params.id).toString());
+            const object = await query.first();
+            const element = object.attributes;
+            console.log(element, 'ele');
+            axios.get(`https://dweb.link/ipfs/${object.attributes.CID}/story.json`)
+                .then(function (response) {
+                    if (response.data.walletAddress) {
+                        let wall = response.data.walletAddress;
 
+                        b.map((e) => {
+                            let tokAdd = e.tokenContractAddress;
+                            if (wall == e.CurrentUser) {
+                                var newData = { ...response.data, element, tokAdd }
+                                console.log(newData, 'new data');
+                                setStoryDetails(newData)
+                            }
+                        })
+                    }
+                })
+        }
+    }
+
+
+    console.log(storyDetails, 'story');
     return (
+        // <div></div>
+
+
         <div style={{ marginTop: "22px" }} className="container storyDetailContainer">
             <h2 className="storyDetailTitle">{storyDetails.name}</h2><br></br>
             <h5 className="text-muted">By :  {storyDetails.authorName}</h5><br></br>
@@ -59,18 +68,17 @@ function RomanceDetail() {
             <small className="text-muted">Last updated {new Date().toLocaleString()}</small>
 
             <h6 className="story-content">
-                {/* <ReactReadMoreReadLess
-                    charLimit={200}
-                    readMoreText={"Read more ▼"}
-                    readLessText={"Read less ▲"}
-                    readMoreClassName="read-more-less--more"
-                    readLessClassName="read-more-less--less"
-                > */}
-                <p>{storyDetails.content}</p>
-                {/* </ReactReadMoreReadLess> */}
-                {/* <ReadMore>
-                    {storyDetails.content}
-                </ReadMore> */}
+
+                <p>{storyDetails.description}</p>
+                <ModalContribute
+                    setReadFullStory={setReadFullStory}
+                    e={storyDetails}
+                >
+
+                </ModalContribute>
+
+                <p>{readFullStory ? storyDetails.content : ""}</p>
+
             </h6>
         </div>
 

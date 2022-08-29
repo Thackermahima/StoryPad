@@ -4,36 +4,30 @@ import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useMoralis, useMoralisQuery } from "react-moralis";
-
-
+import { ethers } from "ethers";
 
 import { BookContext } from '../../../Context/BookContext'
 import ModalContribute from "../../Contribute/Contribute";
 
-function Fanfiction() {
+ function Fanfiction() {
   const { Moralis, user, account, isInitialized } = useMoralis();
-  const { data, fetch } = useMoralisQuery("nftMetadata");
+  const [userAccount, setUserAccount] = useState([]);
   const storyContext = React.useContext(BookContext);
 
-
   const { storyD } = storyContext;
-  console.log(data,storyD);
 
   useEffect(() => {
     const bList = JSON.parse(JSON.stringify(storyD));
-    const tokenList = JSON.parse(JSON.stringify(data));
 
-    if (bList && tokenList) {
-  console.log(bList,tokenList);
-
-      ListStoryData(bList, tokenList)
+    if (bList ) {
+      ListStoryData(bList)
     }
-  }, [storyD, isInitialized, data])
+  }, [storyD, isInitialized])
 
 
   const [storyData, setstoryData] = useState([]);
 
-  async function ListStoryData(bList, tokenList) {
+  async function ListStoryData(bList) {
 
     var array = [];
     if (bList) {
@@ -44,15 +38,8 @@ function Fanfiction() {
           await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then(async (response) => {
             if (response.data.walletAddress) {
               const id = element.objectId
-              let wall = response.data.walletAddress;
-
-              tokenList.map((e) => {
-                let tokAdd = e.tokenContractAddress;
-                if (wall == e.CurrentUser) {
-                  var newData = { ...response.data, id, element, tokAdd }
-                  array.push(newData)
-                }
-              })
+              var newData = {...response.data,id,element}
+             array.push(newData)
             }
           });
         }
@@ -85,23 +72,17 @@ function Fanfiction() {
                           </p>
 
                           <p class="card-text"><small className="text-muted">Last updated {new Date().toLocaleString()}</small></p>
-                          {/* <button type="button" class="btn btn-outline-danger buy-story-btn">Buy Story</button> */}
-                          {e.element.nftholder_access && e.element.general_access == 1 ? ('') :
-
-                            <ModalContribute walletAddress={e.walletAddress}
-                              e={e}
-                            // chargeble={e.chargeble}
-                            // discount={e.discount}
-                            ></ModalContribute>
-
-                          }
 
                           {
                             (e.element.nftholder_access && e.element.general_access == 2) ?
-                              <Button disabled={true} variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
+                            <Link
+                                to={`/horror-detail/${e.id}`}>
+                              <Button disabled={false} variant="outline-info btn-outline-danger buy-story-btn">Read Full Story</Button>
+                              </Link>
+
                               :
                               <Link
-                                to={`/fanfiction-detail/${e.id}`}>
+                                to={`/horror-detail/${e.id}`}>
                                 <Button variant="outline-info btn-outline-danger buy-story-btn" disabled={false} >Read Full Story</Button>
                               </Link>
                           }
@@ -110,9 +91,7 @@ function Fanfiction() {
                     </div>
                   )
                 }
-
               }
-
               )
             }
           </div>

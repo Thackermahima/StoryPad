@@ -17,28 +17,35 @@ import web3 from "web3";
 
 export default function ModalContribute(props) {
   const { Moralis } = useMoralis();
-  console.log(props.e.tokAdd, 'e in Modal')
+  console.log(props.e, 'e in Modal')
   const params = useParams();
-
   const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
   const client = new Web3Storage({ token: API_Token })
   const [userAccount, setUserAccount] = useState([]);
 
   const reviews = Moralis.Object.extend("Reviews");
 
-  const [price, setPrice] = useState('');
+  const [price, setPrice] = useState();
   const [loading, setLoading] = useState(false);
 
-  function PriceSet() {
-    setPrice(props.e.element.Nonholder_price)
+  function PriceSet(result) {
+    console.log(result, '-------function result');
+    if (result > 0) {
+      setPrice(props.e.element.holder_price);
+
+    } else {
+      setPrice(props.e.element.Nonholder_price);
+
+
+    }
   }
-  console.log(props.e.tokAdd,'token------');
+  console.log(props.e.tokAdd, 'token------');
   // console.log(props.e.walletAddress,'wallet add----');
-  console.log(localStorage.getItem("currentUserAddress"),'current user');
+  console.log(localStorage.getItem("currentUserAddress"), 'current user');
   const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
+  const handleClickOpen = (result) => {
     setOpen(true);
-    PriceSet();
+    PriceSet(result);
   };
   const handleClose = () => {
     setOpen(false);
@@ -52,6 +59,7 @@ export default function ModalContribute(props) {
     if (transaction) {
       setLoading(false);
       setOpen(false)
+      props.setReadFullStory(true);
     }
   }
 
@@ -64,29 +72,34 @@ export default function ModalContribute(props) {
       contractAddress: "0x0000000000000000000000000000000000001010",
     }
     let result = await Moralis.transfer(options);
+     console.log(result, '----result in TransferEth ');
     let tx = result.wait();
-    console.log(tx,'tx -----');
+    console.log(tx, 'tx -----');
     return tx;
 
   }
 
+  // getTokenBalance---------------------------------
+
 
   const Web3 = require('web3');
   const web3 = new Web3(new Web3.providers.HttpProvider('https://polygon-mumbai.g.alchemy.com/v2/Z73LIdldZrZCX8ikHvp9zS0T2Vbx73MR'));
-  
+
   // Define the ERC-20 token contract
   const contract = new web3.eth.Contract(ChildContractAbi.abi, props.e.tokAdd)
-  
+
   async function getTokenBalance() {
-      // Execute balanceOf() to retrieve the token balance
-      const result = await contract.methods.balanceOf(localStorage.getItem("currentUserAddress")).call(); // 29803630997051883414242659
-      console.log(result,'result----');
-      // Convert the value from Wei to Ether
-      const formattedResult = web3.utils.fromWei(result, "ether"); // 29803630.997051883414242659
-  
-      console.log(formattedResult);
+    // Execute balanceOf() to retrieve the token balance
+    const result = await contract.methods.balanceOf(localStorage.getItem("currentUserAddress")).call(); // 29803630997051883414242659
+    console.log(result, 'result----');
+    PriceSet(result);
+
+    // Convert the value from Wei to Ether
+    const formattedResult = web3.utils.fromWei(result, "ether"); // 29803630.997051883414242659
+
+    console.log(formattedResult);
   }
-  
+
 
   return (
     <div style={{ display: "contents" }}>
@@ -99,7 +112,9 @@ export default function ModalContribute(props) {
         <DialogTitle>Buy Story</DialogTitle>
         <div className='dialogUnderline'></div>
         <DialogContent>
+
           <h3>
+            {/* {h3Price()} */}
             Your Price
           </h3>
 

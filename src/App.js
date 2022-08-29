@@ -31,7 +31,6 @@ import WildCard from './components/ListingPage/StoryPadList/Wild card'
 import YoungAdult from './components/ListingPage/StoryPadList/Young adult'
 import Fanfiction from './components/ListingPage/StoryPadList/Fanfiction'
 // Detail Page
-import StoryDetail from './components/DetailsPage/StoryDetail'
 import HorrorDetail from './components/DetailsPage/StoryDetail/HorrorDetail';
 import FantasyDetail from './components/DetailsPage/StoryDetail/FantasyDetail';
 import HistoricalDetail from './components/DetailsPage/StoryDetail/HistoricalDetail';
@@ -87,9 +86,8 @@ function App() {
 
         {/* Storypad Detail */}
 
-        <Route path="/storydetail" element={<StoryDetail />} />
 
-        <Route path="/fantasy-detail/:id" element={<FantasyDetail />} />
+        <Route path="/fantasy-detail/:id" element={<HorrorDetail />} />
         <Route path="/historical-detail/:id" element={<HistoricalDetail />} />
         <Route path="/horror-detail/:id" element={<HorrorDetail />} />
         <Route path="/mystery-detail/:id" element={<MysteryDetail />} />

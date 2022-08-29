@@ -10,8 +10,6 @@ import jsPDF from "jspdf";
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 export const BookContext = createContext();
 export const BookContextProvider = (props) => {
     const [Image, setImage] = useState();
@@ -24,7 +22,7 @@ export const BookContextProvider = (props) => {
     const storyD = data;
     // console.log(data, ' ====');
     const [NewData, setData] = useState([]);
-    const [storyDetails, setStoryDetails] = useState({})
+    // const [storyDetails, setStoryDetails] = useState({})
     const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
     const client = new Web3Storage({ token: API_Token })
     const Storypad = Moralis.Object.extend("StoryPadBuildit");
@@ -101,24 +99,24 @@ export const BookContextProvider = (props) => {
         }
     }
 
-    async function getStoryDetails(params) {
-        // console.log("params----------", params);
+    // async function getStoryDetails(params) {
+    //     // console.log("params----------", params);
 
-        if (isAuthenticated) {
-            const archives = Moralis.Object.extend("StoryPadBuildit");
-            const query = new Moralis.Query(archives);
-            query.equalTo("objectId", (params.id).toString());
-            const object = await query.first();
-            console.log(object,'obj in context---');
-            axios.get(`https://dweb.link/ipfs/${object.attributes.CID}/story.json`)
-                .then(function (response) {
-                    setStoryDetails(response.data)  
-                })
-                .catch(function (error) {
+    //     if (isAuthenticated) {
+    //         const archives = Moralis.Object.extend("StoryPadBuildit");
+    //         const query = new Moralis.Query(archives);
+    //         query.equalTo("objectId", (params.id).toString());
+    //         const object = await query.first();
+    //         console.log(object,'obj in context---');
+    //         axios.get(`https://dweb.link/ipfs/${object.attributes.CID}/story.json`)
+    //             .then(function (response) {
+    //                 setStoryDetails(response.data)  
+    //             })
+    //             .catch(function (error) {
 
-                })
-        }
-    }
+    //             })
+    //     }
+    // }
 
 
     // ------------MAHIMA'CODE
@@ -144,9 +142,9 @@ export const BookContextProvider = (props) => {
             value={{
                 addData,
                 storeFiles,
-                getStoryDetails,
+                // getStoryDetails,
                 storyD,
-                storyDetails,
+                // storyDetails,
                 login,
                 storeFile,
                 Image,
