@@ -36,16 +36,23 @@ function HorrorDetail() {
             query.equalTo("objectId", (params.id).toString());
             const object = await query.first();
             const element = object.attributes;
+            const general_access = element.general_access;
+            const nftholder_access = element.nftholder_access;
+            const holder_price = element.holder_price;
+            const Nonholder_price = element.Nonholder_price;
+            const token = element.token
+
             console.log(element, 'ele');
             axios.get(`https://dweb.link/ipfs/${object.attributes.CID}/story.json`)
                 .then(function (response) {
+                    console.log(response, 'res');
                     if (response.data.walletAddress) {
                         let wall = response.data.walletAddress;
 
                         b.map((e) => {
                             let tokAdd = e.tokenContractAddress;
                             if (wall == e.CurrentUser) {
-                                var newData = { ...response.data, element, tokAdd }
+                                var newData = { ...response.data, element, tokAdd, general_access, nftholder_access, holder_price, Nonholder_price, token }
                                 console.log(newData, 'new data');
                                 setStoryDetails(newData)
                             }
@@ -54,9 +61,13 @@ function HorrorDetail() {
                 })
         }
     }
-
-
     console.log(storyDetails, 'story');
+
+    // function readfull() {
+        // setReadFullStory(true);
+    // }
+
+
     return (
         // <div></div>
 
@@ -70,14 +81,27 @@ function HorrorDetail() {
             <h6 className="story-content">
 
                 <p>{storyDetails.description}</p>
-                <ModalContribute
-                    setReadFullStory={setReadFullStory}
-                    e={storyDetails}
-                >
 
-                </ModalContribute>
+                {
+                    (storyDetails.general_access && storyDetails.nftholder_access === 2)
+                        ?
+                        (
+                            <ModalContribute
+                                setReadFullStory={setReadFullStory}
+                                e={storyDetails}
+                            >
+                            </ModalContribute>
+                        ) : 
+                        <p>{readFullStory === false ? storyDetails.content : "no"}</p>
+                        
 
-                <p>{readFullStory ? storyDetails.content : ""}</p>
+
+                }
+                {/* {alert('called')} */}
+
+
+
+                {/* <p>{readFullStory ? storyDetails.content : ""}</p> */}
 
             </h6>
         </div>

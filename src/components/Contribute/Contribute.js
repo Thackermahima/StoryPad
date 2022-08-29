@@ -21,7 +21,7 @@ export default function ModalContribute(props) {
   const params = useParams();
   const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
   const client = new Web3Storage({ token: API_Token })
-  const [userAccount, setUserAccount] = useState([]);
+  const [buyTitle,setBuyTitle] = useState("");
 
   const reviews = Moralis.Object.extend("Reviews");
 
@@ -32,11 +32,11 @@ export default function ModalContribute(props) {
     console.log(result, '-------function result');
     if (result > 0) {
       setPrice(props.e.element.holder_price);
+      setBuyTitle("Your Discounted Price !!")
 
     } else {
       setPrice(props.e.element.Nonholder_price);
-
-
+      setBuyTitle("Your Offered Price !!")  
     }
   }
   console.log(props.e.tokAdd, 'token------');
@@ -44,8 +44,9 @@ export default function ModalContribute(props) {
   console.log(localStorage.getItem("currentUserAddress"), 'current user');
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = (result) => {
+    // PriceSet(result);
     setOpen(true);
-    PriceSet(result);
+   
   };
   const handleClose = () => {
     setOpen(false);
@@ -60,6 +61,8 @@ export default function ModalContribute(props) {
       setLoading(false);
       setOpen(false)
       props.setReadFullStory(true);
+      var buyBTN = document.getElementById("buy-story-detailPage")
+      buyBTN.style.display = "none"
     }
   }
 
@@ -94,19 +97,16 @@ export default function ModalContribute(props) {
     console.log(result, 'result----');
     PriceSet(result);
 
-    // Convert the value from Wei to Ether
-    const formattedResult = web3.utils.fromWei(result, "ether"); // 29803630.997051883414242659
-
-    console.log(formattedResult);
   }
 
 
   return (
     <div style={{ display: "contents" }}>
-      <button type="button" onClick={() => {
-        handleClickOpen();
-        getTokenBalance();
-      }} class="btn btn-outline-danger buy-story-btn">Buy Story</button>
+      <button type="button" id='buy-story-detailPage' onClick={async () => {
+        await getTokenBalance();
+  handleClickOpen();
+      }} 
+      class="btn btn-outline-danger buy-story-btn">Buy Story</button>
 
       <Dialog style={{ widht: "400px" }} open={open} onClose={handleClose}>
         <DialogTitle>Buy Story</DialogTitle>
@@ -114,8 +114,8 @@ export default function ModalContribute(props) {
         <DialogContent>
 
           <h3>
-            {/* {h3Price()} */}
-            Your Price
+            {buyTitle}
+            
           </h3>
 
           <TextField
