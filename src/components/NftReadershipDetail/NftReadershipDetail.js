@@ -70,8 +70,10 @@ function NftReadershipDetail() {
     console.log(storyMintContract, "contractObj");
 
 
-    const price = authorData && authorData.tokenPrice * (100 + 2) / 100;
-    console.log(price, "price");
+    const p = authorData && authorData.tokenPrice * (100 + 2) / 100;
+    console.log(p, "price");
+    let price = p.toFixed(3);
+    console.log(price,'price');
     console.log(parseInt(tokenID));
     console.log(web3.utils.toWei(price.toString(), "ether"), "wei");
 
@@ -85,18 +87,8 @@ function NftReadershipDetail() {
     // let txa = transactionApprove.wait();
     await storyMintContract.callPurchaseItem(parseInt(tokenID), tokenAddress, { value: ethers.utils.parseUnits(price.toString(), "ether") })
 
-    // if(txa){
-
-    // }
-
-    // if(txa){
-
-    // }
   }
   return (
-
-    // console.log(obj.attributes.authorName,"obj")
-
 
     <div style={{ marginBottom: "0px" }} className="app-container">
 
