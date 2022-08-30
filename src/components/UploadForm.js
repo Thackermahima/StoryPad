@@ -17,43 +17,29 @@ import "react-toastify/dist/ReactToastify.css";
 const axios = require('axios');
 
 function UploadForm() {
-
-
+ 
     const notify = () => toast("Story is Published!");
-
-
-
-    // Web3Storage
-
+ 
     const bookContext = React.useContext(BookContext);
     const { addData, storeFiles, storeFile, Image } = bookContext;
     const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
     const { Moralis, account, user,isAuthenticated } = useMoralis();
-    // console.log(account);
+    
     const [AuthorName, setAuthorName] = useState('')
     const [name, setName] = useState('');
     const [ammount, setAmmount] = useState('');
     const [category, setCategory] = useState("Fanfiction");
     const [provide, setProvide] = useState("Free");
     const [coverPic, setCoverPic] = useState(null);
-    // const [description, setDescription] = useState('');
-    // const [content, setContent] = useState('');
-    const [checkbox, setCheckbox] = useState();
+     const [checkbox, setCheckbox] = useState();
     const [NFTHolder, setNFTHolder] = useState("");
     const [NonNFTHolder, setNonNFTHolder] = useState("");
     const [chargeble, setChargeble] = useState(undefined);
     const [discount, setDiscount] = useState(undefined);
     const [Token, setToken] = useState("");
     const [loading, setLoading] = useState(false);
-
-
-
-    //EDITOR
-
-    // let _contentState = ContentState.createFromText('');
-    // const raw = convertToRaw(_contentState)
-    // const [description, setDescription] = useState("")
-
+ 
+ 
     const [description, setDescription] = useState(
         () => EditorState.createEmpty(),
     );
@@ -61,9 +47,7 @@ function UploadForm() {
     const [content, setContent] = useState(
         () => EditorState.createEmpty(),
     );
-
-
-
+ 
     const [data, setData] = useState()
 
     const AuthornameEvent = (e) => {
@@ -73,11 +57,7 @@ function UploadForm() {
     const nameEvent = (e) => {
         setName(e.target.value)
     }
-    // const ammountEvent = (e) => {
-    //     setAmmount(e.target.value)
-    // }
-
-
+  
     const descriptionEvent = (e) => {
         setDescription(e.target.value)
     }
@@ -85,13 +65,7 @@ function UploadForm() {
     const contentEvent = (e) => {
         setContent(e.target.value)
     }
-
-    // async function coverEvent(e) {
-    //     const file = e.target.files[0];
-    //     var url = await storeFile(file);
-    //     setCoverPic(url);
-    // }
-
+ 
     async function coverEvent(e) {
         const file = e.target.files[0];
         var url = await storeFile(file);
@@ -124,8 +98,7 @@ wallet()
         walletAddress: localStorage.getItem("currentUserAddress")
     }
     console.log(Item);
-    // console.log(localStorage.getItem("currentUserAddress"))
-
+    
     async function onFormSubmit(e) {
         e.preventDefault()
         setLoading(true)
@@ -147,8 +120,7 @@ wallet()
 
         // notify();
         setLoading(false)
-
-
+ 
     }
 
     return (
@@ -211,8 +183,6 @@ wallet()
                             onChange={(value) => setContent(value.blocks[0].text)}
                         />
                     </label>
-                    {/* ---------- */}
-                    {/* <label for="field5"><span>Write full story <span className="required">*</span></span><textarea value={content} onChange={contentEvent} name="field5" className="textarea-field-content"></textarea></label> */}
 
                     <label for="field4"><span>For non NFT Holder <span className="required">*</span></span><select value={NonNFTHolder} name="field4" onChange={(e) => setNonNFTHolder(e.target.value)} className="select-field">
                         <option>Choose an option</option>
@@ -276,8 +246,7 @@ wallet()
                             </label>
                         ) : "  "
                     }
-
-
+ 
 
                     <label><input className="terms-checkbox" value={checkbox} onChange={checkboxEvent} type="checkbox"></input>I agree to terms and conditions.</label>
 
@@ -289,10 +258,7 @@ wallet()
                         <ToastContainer />
 
                     </button>
-
-
-
-                    {/* <label><span> </span><input type="submit" value="Publish" style={{ backgroundColor: "green !important" }} /></label> */}
+ 
                 </form>
             </div>
         </div>

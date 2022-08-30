@@ -242,7 +242,7 @@ function UploadFormNft() {
   return (
     <div
       style={{ backgroundColor: "#faf7f8", marginTop: "10%" }}
-      className="col"
+      className="col footer-top"
     >
       <div className="form-style-2 offset-4 row-8">
         <div className="form-style-2-heading">Add NFT Readership from here</div>

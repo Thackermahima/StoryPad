@@ -52,7 +52,7 @@ import ModalContribute from "../../Contribute/Contribute";
 
   return (
     <>
-      <div style={{ marginTop: "100px" }} className="container">
+      <div style={{ marginTop: "100px" }} className="container footer-top">
         <div className="text-center">
         </div>
         <div className="container">

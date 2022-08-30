@@ -3,6 +3,7 @@ import { BsDiscord, BsTwitter,AiFillFacebook } from "react-icons/all";
 
 export default function Footer() {
     return (
+        <div className="footer-fix">
         <footer id="footer">
             <div style={{alignSelf:'center'}}  >
                 Made with ❤️ for the community
@@ -22,5 +23,6 @@ export default function Footer() {
                 </div>
             </div>
         </footer>
+        </div>
     );
 }

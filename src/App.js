@@ -3,21 +3,20 @@ import logo from './logo.svg';
 import './App.css';
 import Home from './components/Home';
 import UploadForm from './components/UploadForm';
-import BookList from './components/ListingPage/BookList';
-import BookDetail from './components/DetailsPage/BookDetail';
-import DocumentList from './components/ListingPage/DocumentList';
-import NewspaperList from './components/ListingPage/NewspaperList'
+// import BookList from './components/ListingPage/BookList';
+// import BookDetail from './components/DetailsPage/BookDetail';
+// import DocumentList from './components/ListingPage/DocumentList';
+// import NewspaperList from './components/ListingPage/NewspaperList'
 import { Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import WebsiteList from './components/ListingPage/WebsitesList';
-import DocumentDetail from './components/DetailsPage/DocumentDetail';
-import NewsDetail from './components/DetailsPage/NewsDetail';
-import WebsiteDetail from './components/DetailsPage/WebsiteDetail';
+// import WebsiteList from './components/ListingPage/WebsitesList';
+// import DocumentDetail from './components/DetailsPage/DocumentDetail';
+// import NewsDetail from './components/DetailsPage/NewsDetail';
+// import WebsiteDetail from './components/DetailsPage/WebsiteDetail';
 import Profile from './components/Profile/Profile';
 import UploadFormNft from './components/UploadFormNft';
 //Listing
-import StoryList from './components/ListingPage/StoryList'
 import Fantasy from './components/ListingPage/StoryPadList/Fantasy';
 import Historical from './components/ListingPage/StoryPadList/Historical'
 import Horror from './components/ListingPage/StoryPadList/Horror'
@@ -56,20 +55,19 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/upload-form" element={<UploadForm />} />
 
-        <Route path="/book-detail/:id" element={<BookDetail />} />
+        {/* <Route path="/book-detail/:id" element={<BookDetail />} /> */}
 
-        <Route path="/doc-detail/:id" element={<DocumentDetail />} />
+        {/* <Route path="/doc-detail/:id" element={<DocumentDetail />} />
         <Route path="/news-detail/:id" element={<NewsDetail />} />
         <Route path="/web-detail/:id" element={<WebsiteDetail />} />
         <Route path="/book-list" element={<BookList />} />
         <Route path="/documents-list" element={<DocumentList />} />
         <Route path="/newspapers-list" element={<NewspaperList />} />
-        <Route path="/websites-list" element={<WebsiteList />} />
+        <Route path="/websites-list" element={<WebsiteList />} /> */}
         <Route path="/profile" element={<Profile />} />
         <Route path="/nft-upload" element={<UploadFormNft />} />
 
         {/* Storypad List */}
-        <Route path="/storylist" element={<StoryList />} />
         <Route path="/fantasy" element={<Fantasy />} />
         <Route path="/historical" element={<Historical />} />
         <Route path="/horror" element={<Horror />} />
