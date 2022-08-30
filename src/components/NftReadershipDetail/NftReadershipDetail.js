@@ -18,29 +18,57 @@ function NftReadershipDetail() {
   const [tokenId, setTokenId] = useState([]);
   const [tokenAddress, setTokenAddress] = useState();
   const [authorData, setAuthorData] = useState();
-  let tokenIds = [];
+
+  const getSoldData = Moralis.Object.extend("soldItems");
+  const solditems = new getSoldData();
+  let images = [];
+  let Items = [];
+  let addresses;
+
   useEffect(() => {
     const getAuthorCollection = async () => {
       const storyPad = Moralis.Object.extend("nftMetadata");
       const query = new Moralis.Query(storyPad);
       query.equalTo("CurrentUser", address);
-      const objects = await query.first()
+      const objects = await query.find()
+
+
       results.push(objects);
-      console.log(results, "results");
+      setResultData(results)
+
       results.map((obj) => {
-        setAuthorData(obj.attributes)
-        let images = [];
-        images = obj.attributes.imageArr;
-        const address = obj.attributes.tokenContractAddress;
-        setTokenAddress(address);
-        setImageURLs(images);
+        setAuthorData(obj[0].attributes);
+        images = obj[0].attributes.imageArr;
+        addresses = obj[0].attributes.tokenContractAddress;
+        setTokenAddress(addresses);
       });
-      setResultData(results);
+
+      const queries = new Moralis.Query(getSoldData);
+      queries.equalTo("tokenAddress", addresses);
+      const ItemData = await queries.find();
+      Items.push(ItemData);
+      console.log(Items, "items fron storyItems");
+
+
+      images.map((obj) => {
+        let find =
+          Items.length > 0 &&
+          Items[0].some((item) => item.attributes.tokenId == obj.tokenId);
+        if (find) {
+          obj.sold = true;
+        } else {
+          obj.sold = false;
+        }
+      });
+      setImageURLs(images);
+
     }
     if (isInitialized) {
       getAuthorCollection()
     }
   }, [])
+
+
   const buyMarketItem = async (tokenID) => {
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
@@ -67,11 +95,13 @@ function NftReadershipDetail() {
     // );
     // let transactionApprove = await childContract.approve(,  parseInt(tokenID.toString()));
     // let txa = transactionApprove.wait();
-    await storyMintContract.callPurchaseItem(parseInt(tokenID), tokenAddress, { value: ethers.utils.parseUnits(price.toString(), "ether") })
-    // if(txa){
-    // }
-    // if(txa){
-    // }
+    await storyMintContract.callPurchaseItem(parseInt(tokenID), tokenAddress, { value: ethers.utils.parseUnits(price.toString(), "ether"), })
+
+    solditems.set("tokenAddress", tokenAddress);
+    solditems.set("tokenId", tokenID);
+    solditems.save();
+
+
   }
   return (
     // console.log(obj.attributes.authorName,"obj")
@@ -85,7 +115,7 @@ function NftReadershipDetail() {
                   <Avatar name="Foo Bar" round={true} />
                 </div>
                 <div className="badges">
-                  <h1 className="profile-name h3">{obj.attributes.authorName}</h1>
+                  <h1 className="profile-name h3">{obj[0].attributes.authorName}</h1>
                 </div>
               </header>
             </div>
@@ -97,10 +127,28 @@ function NftReadershipDetail() {
                       <div className="card-readership-detail card-block">
                         <h4 className="card-title-readership text-right"></h4>
                         <img className="Nft-img" src={img.imageUrl} alt="Photo of sunset" />
-                        <h5 className="card-title-readership mt-3 mb-3"> {img.tokenId} {obj.attributes.symbol}</h5>
-                        <button type="button" class="btn btn-outline-success" onClick={() => {
-                          buyMarketItem(img.tokenId)
-                        }}>Buy for {obj.attributes.tokenPrice} MATIC</button>
+                        <h5 className="card-title-readership mt-3 mb-3"> {img.tokenId} {obj[0].attributes.symbol}</h5>
+
+                        {img.sold ? (
+                            <button
+                              type="button"
+                              class="btn btn-outline-success"
+                             disabled
+                            >
+                             Sold Out
+                            </button>
+                          ) : (
+                            <button
+                              type="button"
+                              class="btn btn-outline-success"
+                              onClick={() => {
+                                buyMarketItem(img.tokenId);
+                              }}
+                            >
+                              Buy for {obj[0].attributes.tokenPrice} MATIC
+                            </button>
+                          )}
+                       
                       </div>
                     </div>
                   )

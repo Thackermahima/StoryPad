@@ -181,7 +181,7 @@ function UploadFormNft() {
       console.log(ipfsHash, "ipfsHash from addDataToIPFS function");
 
       const imageUrl = `https://ipfs.io/ipfs/${ipfsHash}`;
-      imageArr.push({ imageUrl: imageUrl, tokenId: tokenId.toString() });
+      imageArr.push({ imageUrl: imageUrl, tokenId: tokenId.toString(),sold:false });
       console.log(imageArr, "imageArr");
       const blob = new Blob(
 
