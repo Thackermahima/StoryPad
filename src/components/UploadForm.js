@@ -17,29 +17,29 @@ import "react-toastify/dist/ReactToastify.css";
 const axios = require('axios');
 
 function UploadForm() {
- 
+
     const notify = () => toast("Story is Published!");
- 
+
     const bookContext = React.useContext(BookContext);
     const { addData, storeFiles, storeFile, Image } = bookContext;
     const API_Token = process.env.REACT_APP_WEB3STORAGE_TOKEN;
-    const { Moralis, account, user,isAuthenticated } = useMoralis();
-    
+    const { Moralis, account, user, isAuthenticated } = useMoralis();
+
     const [AuthorName, setAuthorName] = useState('')
     const [name, setName] = useState('');
     const [ammount, setAmmount] = useState('');
     const [category, setCategory] = useState("Fanfiction");
     const [provide, setProvide] = useState("Free");
     const [coverPic, setCoverPic] = useState(null);
-     const [checkbox, setCheckbox] = useState();
+    const [checkbox, setCheckbox] = useState();
     const [NFTHolder, setNFTHolder] = useState("");
     const [NonNFTHolder, setNonNFTHolder] = useState("");
     const [chargeble, setChargeble] = useState(undefined);
     const [discount, setDiscount] = useState(undefined);
     const [Token, setToken] = useState("");
     const [loading, setLoading] = useState(false);
- 
- 
+
+
     const [description, setDescription] = useState(
         () => EditorState.createEmpty(),
     );
@@ -47,7 +47,7 @@ function UploadForm() {
     const [content, setContent] = useState(
         () => EditorState.createEmpty(),
     );
- 
+
     const [data, setData] = useState()
 
     const AuthornameEvent = (e) => {
@@ -57,7 +57,7 @@ function UploadForm() {
     const nameEvent = (e) => {
         setName(e.target.value)
     }
-  
+
     const descriptionEvent = (e) => {
         setDescription(e.target.value)
     }
@@ -65,19 +65,19 @@ function UploadForm() {
     const contentEvent = (e) => {
         setContent(e.target.value)
     }
- 
+
     async function coverEvent(e) {
         const file = e.target.files[0];
         var url = await storeFile(file);
         setCoverPic(url);
     }
-const wallet = ()=>{
-    if(isAuthenticated){
+    const wallet = () => {
+        if (isAuthenticated) {
             let ua = user.get("ethAddress")
-            console.log(ua,'ua ----');
+            console.log(ua, 'ua ----');
+        }
     }
-}
-wallet()
+    wallet()
     const checkboxEvent = (e) => {
         setCheckbox(e.target.checked)
     }
@@ -98,7 +98,7 @@ wallet()
         walletAddress: localStorage.getItem("currentUserAddress")
     }
     console.log(Item);
-    
+
     async function onFormSubmit(e) {
         e.preventDefault()
         setLoading(true)
@@ -117,10 +117,11 @@ wallet()
         setChargeble(null);
         setDiscount(null);
         setToken('')
-
+        setNFTHolder('')
+        setNonNFTHolder('')
         // notify();
         setLoading(false)
- 
+
     }
 
     return (
@@ -246,7 +247,7 @@ wallet()
                             </label>
                         ) : "  "
                     }
- 
+
 
                     <label><input className="terms-checkbox" value={checkbox} onChange={checkboxEvent} type="checkbox"></input>I agree to terms and conditions.</label>
 
@@ -258,7 +259,7 @@ wallet()
                         <ToastContainer />
 
                     </button>
- 
+
                 </form>
             </div>
         </div>

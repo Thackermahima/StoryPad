@@ -33,7 +33,7 @@ function UploadFormNft() {
   const API_Token = process.env.REACT_APP_API_TOKEN;
   const client = new Web3Storage({ token: API_Token })
 
-  const notify = () => toast("Succesfuly created nft!");
+  const notify = () => toast("NFT Created Successfully !!");
 
 
 
@@ -228,6 +228,7 @@ function UploadFormNft() {
     //   filesArr
     //  )
     setLoading(false);
+    notify()
   }
 
   let Item = {
@@ -314,7 +315,7 @@ function UploadFormNft() {
             value={loading ? "Loading...." : "Submit"}
             style={{ backgroundColor: "#D82148", marginLeft: "120px" }}
 
-            onClick={notify}
+            // onClick={notify}
             disabled={loading}
 
           />
