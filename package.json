@@ -5,7 +5,13 @@
   "dependencies": {
     "@emotion/react": "latest",
     "@emotion/styled": "latest",
+    "@epnsproject/backend-sdk": "^2.0.0",
+    "@epnsproject/backend-sdk-staging": "^2.0.3",
+    "@epnsproject/frontend-sdk-staging": "^1.8.5",
+    "@epnsproject/sdk-restapi": "^0.1.13",
+    "@epnsproject/sdk-uiembed": "^0.0.3",
     "@material-ui/core": "^4.12.4",
+    "@mui/icons-material": "^5.10.3",
     "@mui/material": "latest",
     "@nomiclabs/hardhat-etherscan": "^3.1.0",
     "@openzeppelin/contracts": "^4.7.3",

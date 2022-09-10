@@ -12,29 +12,33 @@ import axios from "axios";
 import { renderToStaticMarkup } from "react-dom/server";
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
-
+import * as EpnsAPI from "@epnsproject/sdk-restapi";
+import EpnsSDK from "@epnsproject/backend-sdk-staging";
+import { api, utils } from "@epnsproject/frontend-sdk-staging";
+ 
 require("dotenv").config({ path: "./.env" });
 
 
 
 function UploadFormNft() {
   const { Moralis } = useMoralis();
+  
 
 
 
   const getnftData = Moralis.Object.extend("nftMetadata");
   const nftData = new getnftData();
-
   const [authorname, setAuthorname] = useState("");
   const [symbol, setSymbol] = useState("");
   const [tokenPrice, setTokenPrice] = useState("");
   const [tokenQuantity, setTokenQuantity] = useState("");
   const [loading, setLoading] = useState(false);
+
+  
   const API_Token = process.env.REACT_APP_API_TOKEN;
   const client = new Web3Storage({ token: API_Token })
 
   const notify = () => toast("NFT Created Successfully !!");
-
 
 
   const authorNameEvent = (e) => {
@@ -104,7 +108,7 @@ function UploadFormNft() {
     const svgBuffer = Buffer.from(svgElement);
     return svgBuffer;
   };
-
+   const currentUserAdd = localStorage.getItem("currentUserAddress");
   async function onFormSubmit(e) {
 
     e.preventDefault();
@@ -135,15 +139,18 @@ function UploadFormNft() {
     if (txc) {
       setLoading(false);
       console.log(txc, "Successfully created!");
+     
     }
     let event = txc.events[0];
     console.log(event, "Event");
     // let tokenContractAddress = event?.address;
     let tokenContractAddress = event.args[1];
+    let userAdd = localStorage.getItem("currentUserAddress")
     nftData.set("tokenContractAddress", tokenContractAddress);
-    nftData.set("CurrentUser", localStorage.getItem("currentUserAddress"))
-
-
+    nftData.set("CurrentUser", userAdd);
+    //let userAdd = event.args[0]
+  
+     
     setLoading(true);
 
     let transactionBulkMint = await storyMintContract.bulkMintERC721(
@@ -153,10 +160,31 @@ function UploadFormNft() {
       tokenQuantity,
       parseInt(tokenPrice),
     );
-    let txa;
 
     let txb = await transactionBulkMint.wait();
     if (txb) {
+      try{
+        const PK = process.env.REACT_APP_EPNS_PRIVATE_KEY;
+        const Pkey = `0x${PK}`;
+        const epnsSdk = new EpnsSDK(Pkey)
+        console.log(epnsSdk,"epnsSDK");
+          const txEPNS = await epnsSdk.sendNotification(
+            userAdd,
+            "Hey there",
+            "Welcome to the storypad" ,
+            "Created NFT",
+            "Congo, You have created collection of NFTs successfully!",
+            3, //this is the notificationType
+            '', // a url for users to be redirected to
+            '' ,// an image url, or an empty string
+            null, //this can be left as null
+          );
+          console.log(txEPNS, "txEPNS");
+      }catch(error){
+console.log(error.response.data,"error.response.data");
+      }
+      
+          
       setLoading(false);
 
 

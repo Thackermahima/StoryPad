@@ -8,6 +8,8 @@ import ContractABI from "../../abi/mintContractParent.json";
 import ContractChildABI from "../../abi/mintContract.json";
 import { ethers } from "ethers";
 import web3 from "web3";
+import EpnsSDK from "@epnsproject/backend-sdk-staging";
+
 function NftReadershipDetail() {
   const { address } = useParams()
   console.log(address, 'address in NFT detail');
@@ -18,13 +20,13 @@ function NftReadershipDetail() {
   const [tokenId, setTokenId] = useState([]);
   const [tokenAddress, setTokenAddress] = useState();
   const [authorData, setAuthorData] = useState();
-
+  const [authorNAME, setAuthorName] = useState();
   const getSoldData = Moralis.Object.extend("soldItems");
   const solditems = new getSoldData();
   let images = [];
   let Items = [];
   let addresses;
-
+  let authorname; 
   useEffect(() => {
     const getAuthorCollection = async () => {
       const storyPad = Moralis.Object.extend("nftMetadata");
@@ -40,7 +42,9 @@ function NftReadershipDetail() {
         setAuthorData(obj[0].attributes);
         images = obj[0].attributes.imageArr;
         addresses = obj[0].attributes.tokenContractAddress;
+        authorname = obj[0].attributes.authorName;
         setTokenAddress(addresses);
+        setAuthorName(authorname);
       });
 
       const queries = new Moralis.Query(getSoldData);
@@ -95,12 +99,38 @@ function NftReadershipDetail() {
     // );
     // let transactionApprove = await childContract.approve(,  parseInt(tokenID.toString()));
     // let txa = transactionApprove.wait();
-    await storyMintContract.callPurchaseItem(parseInt(tokenID), tokenAddress, { value: ethers.utils.parseUnits(price.toString(), "ether"), })
-
+   let transactionBuyNFT = await storyMintContract.callPurchaseItem(parseInt(tokenID), tokenAddress, { value: ethers.utils.parseUnits(price.toString(), "ether"), })
+   console.log(tokenID,"tokenID buy NFT");
+   console.log(tokenAddress,"tokenAddress");
+   console.log(authorNAME, "authorNAME")
+   let txbuy = await transactionBuyNFT.wait();
+   let userAdd = localStorage.getItem("currentUserAddress")
+    if (txbuy) {
+      try{
     solditems.set("tokenAddress", tokenAddress);
     solditems.set("tokenId", tokenID);
+    solditems.set("authorNAME",authorNAME);
     solditems.save();
-
+        const PK = process.env.REACT_APP_EPNS_PRIVATE_KEY;
+        const Pkey = `0x${PK}`;
+        const epnsSdk = new EpnsSDK(Pkey)
+        console.log(epnsSdk,"epnsSDK");
+          const txEPNS = await epnsSdk.sendNotification(
+            userAdd,
+            "Hey there",
+            "Welcome to the storypad" ,
+            "Purchased NFT",
+            `You have purchased ${tokenID} no NFT from ${authorNAME}'s collection successfully!`,
+            3, //this is the notificationType
+            '', // a url for users to be redirected to
+            '' ,// an image url, or an empty string
+            null, //this can be left as null
+          );
+          console.log(txEPNS, "txEPNS");
+      }catch(error){
+console.log(error.response.data,"error.response.data");
+      }
+    }
 
   }
   return (

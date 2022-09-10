@@ -45,7 +45,7 @@ import FanfictionDetail from './components/DetailsPage/StoryDetail/FanfictionDet
 
 import NftReadership from './components/NftReadership/NftReadershipList'
 import NftReadershipDetail from './components/NftReadershipDetail/NftReadershipDetail'
-
+import FetchNotification from './components/FetchNotification';
 
 function App() {
   return (
@@ -80,7 +80,7 @@ function App() {
         <Route path="/wildcard" element={<WildCard />} />
         <Route path="/youngadult" element={<YoungAdult />} />
         <Route path="/fanfiction" element={<Fanfiction />} />
-
+        <Route path = "/EPNS-notification" element={<FetchNotification />} />
 
         {/* Storypad Detail */}
 

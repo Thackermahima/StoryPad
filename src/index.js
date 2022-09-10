@@ -14,7 +14,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const serverUrl=process.env.REACT_APP_MORALIS_SERVER;
-const appId=process.env.REACT_APP_MORALIS_KEY;
+const appId=process.env.REACT_APP_MORALIS_ID;
 root.render(
   
   <MoralisProvider appId= {appId} serverUrl={serverUrl}>

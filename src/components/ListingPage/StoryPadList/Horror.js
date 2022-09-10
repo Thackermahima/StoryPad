@@ -35,7 +35,8 @@ import ModalContribute from "../../Contribute/Contribute";
         const element = bList[index];
         if (element.CID) {
 
-          await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`).then(async (response) => {
+           await axios.get(`https://${element.CID}.ipfs.dweb.link/story.json`)
+          .then(async (response) => {
             if (response.data.walletAddress) {
               const id = element.objectId
               var newData = {...response.data,id,element}

@@ -7,8 +7,7 @@ import Avatar from 'react-avatar';
 import { ToastContainer, toast } from 'react-toastify';
 import "react-toastify/dist/ReactToastify.css";
 import { useState } from "react";
-
-
+import NotificationsIcon from '@mui/icons-material/Notifications';
 function Header() {
   const notify = () => toast("You are logged in!");
   const [loading, setLoading] = useState(false);
@@ -65,6 +64,10 @@ function Header() {
             <ToastContainer />
 
           </button>
+          <Link to="EPNS-notification">
+          <NotificationsIcon fontSize="large" />
+
+          </Link>
 
           <Link to="profile">
 
